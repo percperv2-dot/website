@@ -68,7 +68,9 @@ body {
 }
 
 .logo-icon-small {
-    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
 }
 
 .logo-title {
@@ -166,7 +168,9 @@ body {
 }
 
 .hero-icon {
-    font-size: 100px;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
     margin-bottom: 20px;
     animation: bounce 2s infinite;
 }
@@ -1295,7 +1299,8 @@ input:disabled + .cookie-slider {
     }
     
     .logo-icon-small {
-        font-size: 28px;
+        width: 28px;
+        height: 28px;
     }
     
     .nav-menu {
@@ -1352,7 +1357,8 @@ input:disabled + .cookie-slider {
     }
     
     .hero-icon {
-        font-size: 80px;
+        width: 80px;
+        height: 80px;
     }
     
     .hero-title {
@@ -1533,7 +1539,8 @@ input:disabled + .cookie-slider {
 
 @media (max-width: 480px) {
     .hero-icon {
-        font-size: 60px;
+        width: 60px;
+        height: 60px;
     }
     
     .hero-title {
