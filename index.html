@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Onion AI Bot - Telegram Bot for AI content generation">
+    <title>Onion AI Bot</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header with Menu -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-header">
+                <div class="logo-icon-small">🤖</div>
+                <h1 class="logo-title">Onion AI Bot</h1>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <button class="nav-item active" data-section="home" data-translate="nav.home">🏠 Home</button>
+                <button class="nav-item" data-section="how-it-works" data-translate="nav.howItWorks">🖼️ How It Works</button>
+                <button class="nav-item" data-section="pricing" data-translate="nav.pricing">💰 Pricing</button>
+                <button class="nav-item" data-section="payment" data-translate="nav.payment">💳 Payment</button>
+                <button class="nav-item" data-section="referral" data-translate="nav.referral">👫 Referral</button>
+                <button class="nav-item" data-section="tips" data-translate="nav.tips">💡 Tips</button>
+                <button class="nav-item" data-section="features" data-translate="nav.features">✨ Features</button>
+            </nav>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Home Section -->
+        <section class="content-section active" id="home">
+            <div class="hero-section">
+                <div class="hero-icon">🤖</div>
+                <h1 class="hero-title">Onion AI Bot</h1>
+                <p class="hero-subtitle" data-translate="hero.subtitle">Your AI assistant on Telegram</p>
+                <p class="hero-description">
+                    <strong data-translate="hero.description">🔥 Turn your photos into hot AI videos in seconds! 🔥</strong>
+                </p>
+                <p class="hero-text" data-translate="hero.text">
+                    Onion AI Bot uses advanced artificial intelligence to create personalized videos and images directly on Telegram.
+                </p>
+                <div class="disclaimer-box hero-disclaimer">
+                    <p class="disclaimer-text" data-translate="hero.disclaimer">The bot was created to modify photos of AI subjects. Onion AI disclaims any responsibility for improper use of the tool. DYOR</p>
+                </div>
+                <a href="https://t.me/goontech_aibot" class="telegram-button" id="telegramBtn">
+                    <div class="telegram-icon-wrapper">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                        </svg>
+                    </div>
+                    <span class="button-text">
+                        <span class="button-main-text" data-translate="button.openTelegram">Open on Telegram</span>
+                        <span class="button-sub-text" data-translate="button.startNow">Start now</span>
+                    </span>
+                    <div class="button-arrow">→</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="content-section" id="how-it-works">
+            <h2 class="section-title" data-translate="howItWorks.title">🖼️ How It Works</h2>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 data-translate="howItWorks.step1.title">Use /create</h3>
+                        <p data-translate="howItWorks.step1.text">Open the bot and use the /create command to start</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 data-translate="howItWorks.step2.title">Upload a photo</h3>
+                        <p data-translate="howItWorks.step2.text">Send a high quality photo (max 5MB)</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 data-translate="howItWorks.step3.title">Choose a style</h3>
+                        <p data-translate="howItWorks.step3.text">Select from dozens of available scenes and effects</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 data-translate="howItWorks.step4.title">Receive your AI video</h3>
+                        <p data-translate="howItWorks.step4.text">Wait for generation and receive your personalized video!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="disclaimer-box">
+                <p class="disclaimer-text" data-translate="howItWorks.disclaimer">The bot was created to modify photos of AI subjects. Onion AI disclaims any responsibility for improper use of the tool. DYOR</p>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="content-section" id="pricing">
+            <h2 class="section-title" data-translate="pricing.title">💰 Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-icon">🎬</div>
+                    <h3 data-translate="pricing.video.title">1 credit</h3>
+                    <p data-translate="pricing.video.text">= 1 video</p>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-icon">🖼️</div>
+                    <h3 data-translate="pricing.image.title">0.5 credits</h3>
+                    <p data-translate="pricing.image.text">= 1 image</p>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-icon">⭐</div>
+                    <h3 data-translate="pricing.special.title">Special scenes</h3>
+                    <p data-translate="pricing.special.text">= 2 credits</p>
+                </div>
+            </div>
+            
+            <h3 class="packages-title" data-translate="pricing.packages.title">📦 Credit Packages</h3>
+            <div class="packages-grid">
+                <div class="package-card">
+                    <div class="package-credits">1</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">100 ⭐</span>
+                        <span class="package-savings">Base</span>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-credits">2</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">200 ⭐</span>
+                        <span class="package-savings">Standard</span>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-credits">3</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">300 ⭐</span>
+                        <span class="package-savings">Standard</span>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-credits">6</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">550 ⭐</span>
+                        <span class="package-savings highlight-savings" data-translate="pricing.packages.save8">Save 8%</span>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-credits">17</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">1100 ⭐</span>
+                        <span class="package-savings highlight-savings" data-translate="pricing.packages.save15">Save 15%</span>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-credits">29</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">1500 ⭐</span>
+                        <span class="package-savings highlight-savings" data-translate="pricing.packages.save22">Save 22%</span>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-credits">58</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">2700 ⭐</span>
+                        <span class="package-savings highlight-savings" data-translate="pricing.packages.save30">Save 30%</span>
+                    </div>
+                </div>
+                <div class="package-card featured">
+                    <div class="package-credits">265</div>
+                    <div class="package-info">
+                        <span class="package-label" data-translate="pricing.packages.credits">Credits</span>
+                        <span class="package-price">10500 ⭐</span>
+                        <span class="package-savings highlight-savings" data-translate="pricing.packages.save40">Save 40%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Section -->
+        <section class="content-section" id="payment">
+            <h2 class="section-title" data-translate="payment.title">💳 Payment Methods</h2>
+            <div class="payment-grid">
+                <div class="payment-card">
+                    <div class="payment-icon">⭐</div>
+                    <h3 data-translate="payment.stars.title">Telegram Stars</h3>
+                    <p data-translate="payment.stars.text">Integrated payment directly on Telegram</p>
+                </div>
+                <div class="payment-card highlight">
+                    <div class="payment-icon">🔥</div>
+                    <h3 data-translate="payment.crypto.title">USDT/USDC</h3>
+                    <p><strong data-translate="payment.crypto.discount">50% OFF!</strong> <span data-translate="payment.crypto.text">Pay with crypto and save</span></p>
+                    <p class="payment-networks" data-translate="payment.crypto.networks">Supports: BSC, Polygon, Ethereum, Arbitrum, Optimism, Base, zkSync</p>
+                </div>
+            </div>
+            <div class="bonus-card">
+                <p>🎁 <strong data-translate="payment.bonus.label">Special bonus:</strong> <span data-translate="payment.bonus.text">+2 bonus credits on your first crypto purchase!</span></p>
+            </div>
+        </section>
+
+        <!-- Referral Section -->
+        <section class="content-section" id="referral">
+            <h2 class="section-title" data-translate="referral.title">👫 Referral System</h2>
+            <div class="referral-card">
+                <p data-translate="referral.text1">Invite your friends and earn bonus credits for each friend who makes a payment!</p>
+                <p data-translate="referral.text2">Use the /referrals command in the bot to get your personalized invite link.</p>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="content-section" id="tips">
+            <h2 class="section-title" data-translate="tips.title">💡 Tips for Better Results</h2>
+            <div class="tips-container">
+                <div class="tip-card">
+                    <span class="tip-icon">📸</span>
+                    <p data-translate="tips.quality">Use <strong>high quality photos</strong> for optimal results</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">📐</span>
+                    <p data-translate="tips.ratio">Ideal proportions: <strong>1:1</strong>, <strong>16:9</strong> or <strong>9:16</strong></p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">👤</span>
+                    <p data-translate="tips.pose">Show <strong>half body</strong> (from waist up) or <strong>face only</strong></p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">⚠️</span>
+                    <p data-translate="tips.distance">Avoid photos taken from too far away for scenes with Deepthroat</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="content-section" id="features">
+            <h2 class="section-title" data-translate="features.title">✨ Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 data-translate="features.scenes.title">Multiple Scenes</h3>
+                    <p data-translate="features.scenes.text">Dozens of available scenes: hetero, gay, long videos and more</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 data-translate="features.privacy.title">Total Privacy</h3>
+                    <p data-translate="features.privacy.text">Your media is not stored on servers. Chats are private and secure</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 data-translate="features.multilang.title">Multi-language</h3>
+                    <p data-translate="features.multilang.text">Support for many languages: English, Italian, French, German, Spanish and more</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 data-translate="features.fast.title">Fast & Easy</h3>
+                    <p data-translate="features.fast.text">Intuitive interface and fast results. Everything directly on Telegram</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h3 data-translate="features.free.title">Free Credits</h3>
+                    <p data-translate="features.free.text">Receive free credits on signup to try the bot</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 data-translate="features.tracking.title">Tracking</h3>
+                    <p data-translate="features.tracking.text">Monitor your generation status in real-time with /generation_status</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#" class="footer-link" data-translate="footer.privacy" onclick="showPrivacyPolicy(); return false;">Privacy Policy</a>
+            <span class="footer-separator">|</span>
+            <a href="#" class="footer-link" data-translate="footer.terms" onclick="showTermsOfService(); return false;">Terms of Service</a>
+            <span class="footer-separator">|</span>
+            <a href="#" class="footer-link" data-translate="footer.cookies" onclick="showCookiePolicy(); return false;">Cookie Policy</a>
+        </div>
+        <p data-translate="footer.copyright">&copy; 2025 Onion AI Bot. All rights reserved.</p>
+    </footer>
+
+    <!-- DYOR Disclaimer Modal -->
+    <div class="disclaimer-modal" id="disclaimerModal">
+        <div class="disclaimer-modal-content">
+            <div class="disclaimer-icon">⚠️</div>
+            <h2 data-translate="disclaimer.title">Important Disclaimer</h2>
+            <div class="disclaimer-text-content" data-translate="disclaimer.content">
+                <p><strong>DYOR (Do Your Own Research)</strong></p>
+                <p>The bot was created to modify photos of AI-generated subjects only. Onion AI disclaims any responsibility for improper use of the tool.</p>
+                <p>By using this service, you acknowledge that:</p>
+                <ul>
+                    <li>You will only use the bot with AI-generated content or content you have legal rights to modify</li>
+                    <li>You will not use the service to create illegal, harmful, or offensive content</li>
+                    <li>You are solely responsible for ensuring your use complies with local laws and regulations</li>
+                    <li>Onion AI is not liable for any consequences arising from misuse of the service</li>
+                </ul>
+                <p class="disclaimer-warning"><strong>You must be 18+ years old to use this service.</strong></p>
+            </div>
+            <div class="disclaimer-checkbox">
+                <label class="disclaimer-checkbox-label">
+                    <input type="checkbox" id="disclaimerAccept">
+                    <span data-translate="disclaimer.accept">I have read and understood the disclaimer. I accept full responsibility for my use of this service.</span>
+                </label>
+            </div>
+            <div class="disclaimer-buttons">
+                <button class="disclaimer-btn accept-btn" id="disclaimerAcceptBtn" onclick="acceptDisclaimer()" disabled data-translate="disclaimer.button.accept">I Accept</button>
+                <button class="disclaimer-btn reject-btn" onclick="rejectDisclaimer()" data-translate="disclaimer.button.reject">I Do Not Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <h4 data-translate="cookies.title">🍪 Cookie Notice</h4>
+                <p data-translate="cookies.message">We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking "Accept All", you consent to our use of cookies. You can manage your preferences at any time.</p>
+            </div>
+            <div class="cookie-buttons">
+                <button class="cookie-btn accept-all" onclick="acceptAllCookies()" data-translate="cookies.acceptAll">Accept All</button>
+                <button class="cookie-btn reject-all" onclick="rejectAllCookies()" data-translate="cookies.rejectAll">Reject All</button>
+                <button class="cookie-btn customize" onclick="showCookieSettings()" data-translate="cookies.customize">Customize</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div class="cookie-modal" id="cookieModal">
+        <div class="cookie-modal-content">
+            <h3 data-translate="cookies.settings.title">Cookie Settings</h3>
+            <p class="cookie-modal-text" data-translate="cookies.settings.description">Manage your cookie preferences. You can enable or disable different types of cookies below.</p>
+            
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <label class="cookie-switch">
+                        <input type="checkbox" id="cookieEssential" checked disabled>
+                        <span class="cookie-slider"></span>
+                    </label>
+                    <div class="cookie-category-info">
+                        <h4 data-translate="cookies.essential.title">Essential Cookies</h4>
+                        <p data-translate="cookies.essential.description">These cookies are necessary for the website to function and cannot be switched off.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <label class="cookie-switch">
+                        <input type="checkbox" id="cookieAnalytics">
+                        <span class="cookie-slider"></span>
+                    </label>
+                    <div class="cookie-category-info">
+                        <h4 data-translate="cookies.analytics.title">Analytics Cookies</h4>
+                        <p data-translate="cookies.analytics.description">These cookies help us understand how visitors interact with our website.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <label class="cookie-switch">
+                        <input type="checkbox" id="cookiePreferences">
+                        <span class="cookie-slider"></span>
+                    </label>
+                    <div class="cookie-category-info">
+                        <h4 data-translate="cookies.preferences.title">Preference Cookies</h4>
+                        <p data-translate="cookies.preferences.description">These cookies remember your preferences and settings for a better experience.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cookie-modal-buttons">
+                <button class="cookie-btn save-preferences" onclick="saveCookiePreferences()" data-translate="cookies.settings.save">Save Preferences</button>
+                <button class="cookie-btn accept-all-modal" onclick="acceptAllCookies()" data-translate="cookies.acceptAll">Accept All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="legal-modal" id="privacyModal">
+        <div class="legal-modal-content">
+            <span class="legal-close" onclick="closeLegalModal('privacyModal')">&times;</span>
+            <h2 data-translate="privacy.title">Privacy Policy</h2>
+            <div class="legal-content" data-translate="privacy.content">
+                <p><strong>Last Updated: January 2025</strong></p>
+                
+                <h3>1. Information We Collect</h3>
+                <p>We collect information that you provide directly to us, including:</p>
+                <ul>
+                    <li>IP address and geolocation data for language detection</li>
+                    <li>Language preferences stored in your browser</li>
+                    <li>Cookie preferences and settings</li>
+                </ul>
+                
+                <h3>2. How We Use Your Information</h3>
+                <p>We use the information we collect to:</p>
+                <ul>
+                    <li>Provide and improve our services</li>
+                    <li>Personalize your experience (language selection)</li>
+                    <li>Analyze website usage and trends</li>
+                </ul>
+                
+                <h3>3. Data Storage</h3>
+                <p>Your data is stored locally in your browser (localStorage) and is not transmitted to external servers except for IP geolocation services used solely for language detection.</p>
+                
+                <h3>4. Your Rights</h3>
+                <p>Under GDPR and other privacy laws, you have the right to:</p>
+                <ul>
+                    <li>Access your personal data</li>
+                    <li>Request deletion of your data</li>
+                    <li>Opt-out of non-essential cookies</li>
+                    <li>Withdraw consent at any time</li>
+                </ul>
+                
+                <h3>5. Contact Us</h3>
+                <p>For privacy-related inquiries, contact us through the Telegram bot: <a href="https://t.me/goontech_aibot">@goontech_aibot</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="legal-modal" id="termsModal">
+        <div class="legal-modal-content">
+            <span class="legal-close" onclick="closeLegalModal('termsModal')">&times;</span>
+            <h2 data-translate="terms.title">Terms of Service</h2>
+            <div class="legal-content" data-translate="terms.content">
+                <p><strong>Last Updated: January 2025</strong></p>
+                
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing and using Onion AI Bot website, you accept and agree to be bound by these Terms of Service.</p>
+                
+                <h3>2. Use of Service</h3>
+                <p>The bot is designed to modify photos of AI-generated subjects only. Users must:</p>
+                <ul>
+                    <li>Only use the service with AI-generated content or content they have legal rights to modify</li>
+                    <li>Not use the service to create illegal, harmful, or offensive content</li>
+                    <li>Comply with all applicable laws and regulations</li>
+                </ul>
+                
+                <h3>3. Disclaimer</h3>
+                <p>Onion AI disclaims any responsibility for:</p>
+                <ul>
+                    <li>Improper use of the tool</li>
+                    <li>Content created by users</li>
+                    <li>Any legal consequences arising from misuse</li>
+                </ul>
+                <p><strong>DYOR (Do Your Own Research)</strong> - Users are responsible for ensuring their use complies with local laws.</p>
+                
+                <h3>4. Intellectual Property</h3>
+                <p>All content on this website, including text, graphics, logos, and software, is the property of Onion AI Bot and protected by copyright laws.</p>
+                
+                <h3>5. Limitation of Liability</h3>
+                <p>Onion AI Bot shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of the service.</p>
+                
+                <h3>6. Changes to Terms</h3>
+                <p>We reserve the right to modify these terms at any time. Continued use constitutes acceptance of modified terms.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Policy Modal -->
+    <div class="legal-modal" id="cookiePolicyModal">
+        <div class="legal-modal-content">
+            <span class="legal-close" onclick="closeLegalModal('cookiePolicyModal')">&times;</span>
+            <h2 data-translate="cookiePolicy.title">Cookie Policy</h2>
+            <div class="legal-content" data-translate="cookiePolicy.content">
+                <p><strong>Last Updated: January 2025</strong></p>
+                
+                <h3>1. What Are Cookies?</h3>
+                <p>Cookies are small text files stored on your device when you visit a website. They help websites remember your preferences and improve your experience.</p>
+                
+                <h3>2. Types of Cookies We Use</h3>
+                
+                <h4>Essential Cookies</h4>
+                <p>These cookies are necessary for the website to function properly. They cannot be disabled.</p>
+                <ul>
+                    <li>Language preference storage</li>
+                    <li>Cookie consent status</li>
+                </ul>
+                
+                <h4>Analytics Cookies</h4>
+                <p>These cookies help us understand how visitors use our website. Currently, we do not use third-party analytics services.</p>
+                
+                <h4>Preference Cookies</h4>
+                <p>These cookies remember your settings and preferences for a better user experience.</p>
+                <ul>
+                    <li>Language selection</li>
+                    <li>Cookie preferences</li>
+                </ul>
+                
+                <h3>3. Managing Cookies</h3>
+                <p>You can manage your cookie preferences at any time by clicking the "Customize" button in the cookie banner or accessing cookie settings through the footer.</p>
+                
+                <h3>4. Third-Party Cookies</h3>
+                <p>We currently do not use third-party cookies or tracking services.</p>
+                
+                <h3>5. Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Accept or reject non-essential cookies</li>
+                    <li>Change your cookie preferences at any time</li>
+                    <li>Delete cookies from your browser settings</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="cookies.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
