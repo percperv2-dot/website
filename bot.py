@@ -5,6 +5,7 @@ Onion AI Bot - Telegram Bot
 Responds to /start command with the website link
 """
 
+import asyncio
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -53,6 +54,13 @@ def main() -> None:
     # Add command handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
+    
+    # Create event loop for Python 3.14 compatibility
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
     
     # Start the bot
     logger.info("Bot started! Press Ctrl+C to stop.")
