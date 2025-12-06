@@ -75,9 +75,33 @@ def update_country_stats(country, user_id):
                 'last_updated': None
             }
         
+        # Migrate old format to new format (backward compatibility)
+        if 'total_starts' in stats and 'total_unique_users' not in stats:
+            stats['total_unique_users'] = stats['total_starts']
+            del stats['total_starts']
+            logger.info("Migrated stats from old format to new format")
+        
         # Initialize tracked_users if it doesn't exist (for backward compatibility)
         if 'tracked_users' not in stats:
             stats['tracked_users'] = []
+            # If we have old data, try to extract user IDs from starts.jsonl
+            if BOT_STARTS_FILE.exists():
+                try:
+                    with open(BOT_STARTS_FILE, 'r', encoding='utf-8') as f:
+                        for line in f:
+                            if line.strip():
+                                try:
+                                    old_data = json.loads(line)
+                                    old_user_id = old_data.get('user_id')
+                                    if old_user_id:
+                                        stats['tracked_users'].append(str(old_user_id))
+                                except:
+                                    pass
+                    # Remove duplicates
+                    stats['tracked_users'] = list(dict.fromkeys(stats['tracked_users']))
+                    logger.info(f"Migrated {len(stats['tracked_users'])} user IDs from existing logs")
+                except Exception as e:
+                    logger.warning(f"Could not migrate user IDs from logs: {e}")
         
         # Check if user was already counted
         if user_id is None:
@@ -111,11 +135,43 @@ def update_country_stats(country, user_id):
         return None
 
 
+def is_user_already_logged(user_id):
+    """Check if user is already in the starts.jsonl file"""
+    if user_id is None:
+        return False
+    
+    if not BOT_STARTS_FILE.exists():
+        return False
+    
+    try:
+        user_id_str = str(user_id)
+        with open(BOT_STARTS_FILE, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        existing_data = json.loads(line)
+                        if str(existing_data.get('user_id')) == user_id_str:
+                            return True
+                    except:
+                        continue
+        return False
+    except Exception as e:
+        logger.error(f"Error checking if user is logged: {e}")
+        return False
+
+
 def log_bot_start(update: Update):
-    """Log when someone uses /start command"""
+    """Log when someone uses /start command (only once per user)"""
     try:
         user = update.effective_user
         chat = update.effective_chat
+        user_id = user.id if user else None
+        
+        # Check if user already logged
+        if is_user_already_logged(user_id):
+            username = user.username if user and user.username else (user.first_name if user else 'Unknown')
+            logger.info(f"⏭️ User {username} (ID: {user_id}) already logged, skipping")
+            return True
         
         # Get country from language code
         language_code = user.language_code if user else None
@@ -123,7 +179,7 @@ def log_bot_start(update: Update):
         
         data = {
             'timestamp': datetime.now().isoformat(),
-            'user_id': user.id if user else None,
+            'user_id': user_id,
             'username': user.username if user else None,
             'first_name': user.first_name if user else None,
             'last_name': user.last_name if user else None,
@@ -133,16 +189,15 @@ def log_bot_start(update: Update):
             'country': country
         }
         
-        # Log to file (always log, even if user already counted)
+        # Log to file (only if new user)
         with open(BOT_STARTS_FILE, 'a', encoding='utf-8') as f:
             f.write(json.dumps(data, ensure_ascii=False) + '\n')
         
         # Update country statistics (only if new user)
-        user_id = user.id if user else None
         update_country_stats(country, user_id)
         
         username = user.username if user and user.username else (user.first_name if user else 'Unknown')
-        logger.info(f"Bot /start used by: {username} (ID: {user.id if user else 'N/A'}) from {country}")
+        logger.info(f"✅ New user logged: {username} (ID: {user_id}) from {country}")
         return True
     except Exception as e:
         logger.error(f"Error logging bot start: {e}")
