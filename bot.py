@@ -63,15 +63,29 @@ def log_visit(data):
 def track():
     """Endpoint to receive tracking data"""
     if request.method == 'OPTIONS':
+        logger.info("CORS preflight request received")
         return '', 200
+    
     try:
+        logger.info(f"Tracking request received from {request.remote_addr}")
         data = request.get_json()
+        
+        if not data:
+            # Try to get data from raw body
+            try:
+                data = json.loads(request.data)
+            except:
+                pass
+        
         if data:
+            logger.info(f"Received data: {data.get('url', 'N/A')} from {data.get('referrer', 'direct')}")
             log_visit(data)
             return jsonify({'status': 'success'}), 200
-        return jsonify({'status': 'error', 'message': 'No data received'}), 400
+        else:
+            logger.warning("No data received in tracking request")
+            return jsonify({'status': 'error', 'message': 'No data received'}), 400
     except Exception as e:
-        logger.error(f"Error processing tracking data: {e}")
+        logger.error(f"Error processing tracking data: {e}", exc_info=True)
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 

@@ -3,8 +3,20 @@
  * Tracks visitor information and sends it to the tracking endpoint
  */
 
-// Tracking endpoint - change this to your server URL
-const TRACKING_ENDPOINT = 'http://localhost:8080/track';
+// Tracking endpoint - automatically detects the correct URL
+function getTrackingEndpoint() {
+    // If running on localhost, use localhost:8080
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:8080/track';
+    }
+    // Otherwise, use the same domain with port 8080
+    // Change this if your tracking server is on a different domain/port
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    return `${protocol}//${hostname}:8080/track`;
+}
+
+const TRACKING_ENDPOINT = getTrackingEndpoint();
 
 /**
  * Collect visitor information
@@ -49,9 +61,13 @@ function getOrCreateSessionId() {
 async function sendTrackingData() {
     try {
         const data = collectVisitorData();
+        const endpoint = getTrackingEndpoint();
+        
+        console.log('Sending tracking data to:', endpoint);
+        console.log('Data:', data);
         
         // Send to tracking endpoint
-        const response = await fetch(TRACKING_ENDPOINT, {
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,11 +78,14 @@ async function sendTrackingData() {
         });
         
         if (response.ok) {
-            console.log('Tracking data sent successfully');
+            console.log('✓ Tracking data sent successfully');
+        } else {
+            console.warn('✗ Tracking failed:', response.status, response.statusText);
         }
     } catch (error) {
-        // Silently fail - don't interrupt user experience
-        console.debug('Tracking error (non-critical):', error);
+        // Log error for debugging
+        console.error('✗ Tracking error:', error.message);
+        console.error('Endpoint was:', getTrackingEndpoint());
     }
 }
 
@@ -90,10 +109,9 @@ window.addEventListener('beforeunload', function() {
     
     // Use sendBeacon for reliable delivery on page unload
     if (navigator.sendBeacon) {
-        navigator.sendBeacon(
-            TRACKING_ENDPOINT,
-            JSON.stringify(data)
-        );
+        const endpoint = getTrackingEndpoint();
+        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+        navigator.sendBeacon(endpoint, blob);
     }
 });
 
