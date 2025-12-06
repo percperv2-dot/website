@@ -60,8 +60,8 @@ def get_country_from_language(language_code):
     return LANGUAGE_TO_COUNTRY.get(base_lang, 'Unknown')
 
 
-def update_country_stats(country):
-    """Update country statistics"""
+def update_country_stats(country, user_id):
+    """Update country statistics (only count each user once)"""
     try:
         # Load existing stats
         if BOT_STATS_FILE.exists():
@@ -69,13 +69,30 @@ def update_country_stats(country):
                 stats = json.load(f)
         else:
             stats = {
-                'total_starts': 0,
+                'total_unique_users': 0,
                 'countries': {},
+                'tracked_users': [],  # List of user IDs already counted
                 'last_updated': None
             }
         
-        # Update stats
-        stats['total_starts'] = stats.get('total_starts', 0) + 1
+        # Initialize tracked_users if it doesn't exist (for backward compatibility)
+        if 'tracked_users' not in stats:
+            stats['tracked_users'] = []
+        
+        # Check if user was already counted
+        if user_id is None:
+            logger.warning("Cannot track user: user_id is None")
+            return None
+        
+        user_id_str = str(user_id)
+        if user_id_str in stats['tracked_users']:
+            # User already counted, skip
+            logger.info(f"⏭️ User {user_id} already counted, skipping stats update")
+            return stats
+        
+        # New user - add to tracked list and update stats
+        stats['tracked_users'].append(user_id_str)
+        stats['total_unique_users'] = stats.get('total_unique_users', 0) + 1
         stats['countries'][country] = stats['countries'].get(country, 0) + 1
         stats['last_updated'] = datetime.now().isoformat()
         
@@ -85,7 +102,8 @@ def update_country_stats(country):
         
         # Log country stats
         country_count = stats['countries'][country]
-        logger.info(f"📊 Stats updated: {country} ({country_count} starts, Total: {stats['total_starts']})")
+        total_users = stats['total_unique_users']
+        logger.info(f"📊 New user from {country}! Stats: {country} ({country_count} users), Total unique users: {total_users}")
         
         return stats
     except Exception as e:
@@ -115,12 +133,13 @@ def log_bot_start(update: Update):
             'country': country
         }
         
-        # Log to file
+        # Log to file (always log, even if user already counted)
         with open(BOT_STARTS_FILE, 'a', encoding='utf-8') as f:
             f.write(json.dumps(data, ensure_ascii=False) + '\n')
         
-        # Update country statistics
-        update_country_stats(country)
+        # Update country statistics (only if new user)
+        user_id = user.id if user else None
+        update_country_stats(country, user_id)
         
         username = user.username if user and user.username else (user.first_name if user else 'Unknown')
         logger.info(f"Bot /start used by: {username} (ID: {user.id if user else 'N/A'}) from {country}")
