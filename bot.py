@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Onion AI Bot - Telegram Bot with Website Tracking
+Onion AI Bot - Telegram Bot
 Responds to /start command with the website link
-Also runs a tracking server to monitor website visitors
+Logs all /start commands to a file
 """
 
 import asyncio
 import logging
-import threading
 import json
 from datetime import datetime
 from pathlib import Path
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
@@ -30,113 +27,114 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("telegram.ext").setLevel(logging.WARNING)
 logging.getLogger("telegram").setLevel(logging.WARNING)
-logging.getLogger("werkzeug").setLevel(logging.WARNING)  # Flask logs
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)  # Keep our own logs at INFO level
 
-# Tracking server setup
-TRACKING_DIR = Path('tracking_data')
-TRACKING_DIR.mkdir(exist_ok=True)
-LOG_FILE = TRACKING_DIR / 'visitors.jsonl'
+# Bot start logging setup
+BOT_STATS_DIR = Path('bot_stats')
+BOT_STATS_DIR.mkdir(exist_ok=True)
+BOT_STARTS_FILE = BOT_STATS_DIR / 'starts.jsonl'
+BOT_STATS_FILE = BOT_STATS_DIR / 'country_stats.json'
 
-# Flask app for tracking
-tracking_app = Flask(__name__)
-CORS(tracking_app)
+# Mapping language codes to countries (fallback)
+LANGUAGE_TO_COUNTRY = {
+    'it': 'Italy', 'en': 'United States', 'es': 'Spain', 'fr': 'France',
+    'de': 'Germany', 'pt': 'Portugal', 'ru': 'Russia', 'zh': 'China',
+    'ja': 'Japan', 'ko': 'South Korea', 'ar': 'Saudi Arabia', 'tr': 'Turkey',
+    'pl': 'Poland', 'nl': 'Netherlands', 'uk': 'Ukraine', 'ro': 'Romania',
+    'cs': 'Czech Republic', 'hu': 'Hungary', 'sv': 'Sweden', 'no': 'Norway',
+    'da': 'Denmark', 'fi': 'Finland', 'el': 'Greece', 'he': 'Israel',
+    'th': 'Thailand', 'vi': 'Vietnam', 'id': 'Indonesia', 'ms': 'Malaysia',
+    'hi': 'India', 'bn': 'Bangladesh', 'ur': 'Pakistan', 'fa': 'Iran'
+}
 
 
-# Tracking server functions
-def log_visit(data):
-    """Log visitor data to file"""
+def get_country_from_language(language_code):
+    """Get country name from language code"""
+    if not language_code:
+        return 'Unknown'
+    
+    # Get base language code (e.g., 'it' from 'it-IT')
+    base_lang = language_code.split('-')[0].lower()
+    return LANGUAGE_TO_COUNTRY.get(base_lang, 'Unknown')
+
+
+def update_country_stats(country):
+    """Update country statistics"""
     try:
-        data['server_timestamp'] = datetime.now().isoformat()
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        # Load existing stats
+        if BOT_STATS_FILE.exists():
+            with open(BOT_STATS_FILE, 'r', encoding='utf-8') as f:
+                stats = json.load(f)
+        else:
+            stats = {
+                'total_starts': 0,
+                'countries': {},
+                'last_updated': None
+            }
+        
+        # Update stats
+        stats['total_starts'] = stats.get('total_starts', 0) + 1
+        stats['countries'][country] = stats['countries'].get(country, 0) + 1
+        stats['last_updated'] = datetime.now().isoformat()
+        
+        # Save updated stats
+        with open(BOT_STATS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(stats, f, indent=2, ensure_ascii=False)
+        
+        # Log country stats
+        country_count = stats['countries'][country]
+        logger.info(f"📊 Stats updated: {country} ({country_count} starts, Total: {stats['total_starts']})")
+        
+        return stats
+    except Exception as e:
+        logger.error(f"Error updating country stats: {e}")
+        return None
+
+
+def log_bot_start(update: Update):
+    """Log when someone uses /start command"""
+    try:
+        user = update.effective_user
+        chat = update.effective_chat
+        
+        # Get country from language code
+        language_code = user.language_code if user else None
+        country = get_country_from_language(language_code)
+        
+        data = {
+            'timestamp': datetime.now().isoformat(),
+            'user_id': user.id if user else None,
+            'username': user.username if user else None,
+            'first_name': user.first_name if user else None,
+            'last_name': user.last_name if user else None,
+            'chat_id': chat.id if chat else None,
+            'chat_type': chat.type if chat else None,
+            'language_code': language_code,
+            'country': country
+        }
+        
+        # Log to file
+        with open(BOT_STARTS_FILE, 'a', encoding='utf-8') as f:
             f.write(json.dumps(data, ensure_ascii=False) + '\n')
-        logger.info(f"Visit logged: {data.get('referrer', 'direct')} -> {data.get('url', 'N/A')}")
+        
+        # Update country statistics
+        update_country_stats(country)
+        
+        username = user.username if user and user.username else (user.first_name if user else 'Unknown')
+        logger.info(f"Bot /start used by: {username} (ID: {user.id if user else 'N/A'}) from {country}")
         return True
     except Exception as e:
-        logger.error(f"Error logging visit: {e}")
+        logger.error(f"Error logging bot start: {e}")
         return False
-
-
-@tracking_app.route('/track', methods=['POST', 'OPTIONS'])
-def track():
-    """Endpoint to receive tracking data"""
-    if request.method == 'OPTIONS':
-        logger.info("CORS preflight request received")
-        return '', 200
-    
-    try:
-        logger.info(f"Tracking request received from {request.remote_addr}")
-        data = request.get_json()
-        
-        if not data:
-            # Try to get data from raw body
-            try:
-                data = json.loads(request.data)
-            except:
-                pass
-        
-        if data:
-            logger.info(f"Received data: {data.get('url', 'N/A')} from {data.get('referrer', 'direct')}")
-            log_visit(data)
-            return jsonify({'status': 'success'}), 200
-        else:
-            logger.warning("No data received in tracking request")
-            return jsonify({'status': 'error', 'message': 'No data received'}), 400
-    except Exception as e:
-        logger.error(f"Error processing tracking data: {e}", exc_info=True)
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-
-@tracking_app.route('/stats', methods=['GET'])
-def stats():
-    """Get basic statistics about visitors"""
-    try:
-        if not LOG_FILE.exists():
-            return jsonify({'total_visits': 0, 'message': 'No tracking data yet'})
-        visits = []
-        with open(LOG_FILE, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip():
-                    visits.append(json.loads(line))
-        referrers = {}
-        for visit in visits:
-            ref = visit.get('referrer', 'direct')
-            referrers[ref] = referrers.get(ref, 0) + 1
-        return jsonify({
-            'total_visits': len(visits),
-            'referrers': referrers,
-            'last_visit': visits[-1] if visits else None
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-@tracking_app.route('/visits', methods=['GET'])
-def visits():
-    """Get all visits (limited to last 100)"""
-    try:
-        if not LOG_FILE.exists():
-            return jsonify({'visits': []})
-        visits_list = []
-        with open(LOG_FILE, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-            for line in lines[-100:]:
-                if line.strip():
-                    visits_list.append(json.loads(line))
-        return jsonify({'visits': visits_list})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-def run_tracking_server():
-    """Run Flask tracking server in a separate thread"""
-    tracking_app.run(host='0.0.0.0', port=8080, debug=False, use_reloader=False)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles the /start command"""
+    # Log the /start command
+    log_bot_start(update)
+    
     message = "Welcome to Onion AI Bot!\n\n"
     message += "Visit our website: www.oaibot.net"
     
@@ -154,12 +152,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 def main() -> None:
-    """Starts the bot and tracking server"""
-    # Start tracking server in a separate thread
-    tracking_thread = threading.Thread(target=run_tracking_server, daemon=True)
-    tracking_thread.start()
-    logger.info("Tracking server started on http://localhost:8080")
-    
+    """Starts the bot"""
     # Create the application
     application = Application.builder().token(BOT_TOKEN).build()
     
@@ -176,10 +169,7 @@ def main() -> None:
     
     # Start the bot
     logger.info("Bot started! Press Ctrl+C to stop.")
-    logger.info("Tracking endpoints:")
-    logger.info("  - POST http://localhost:8080/track")
-    logger.info("  - GET  http://localhost:8080/stats")
-    logger.info("  - GET  http://localhost:8080/visits")
+    logger.info(f"Bot starts will be logged to: {BOT_STARTS_FILE.absolute()}")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
