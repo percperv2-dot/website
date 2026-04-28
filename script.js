@@ -77,7 +77,7 @@ function handleTelegramClick(e) {
  * Redirect to Telegram bot
  */
 function redirectToTelegram() {
-    const TELEGRAM_BOT_URL = 'https://t.me/goontech_aibot';
+    const TELEGRAM_BOT_URL = 'https://t.me/goontech_aiibot';
     
     // Try to open in Telegram app first, fallback to web
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
